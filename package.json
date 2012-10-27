@@ -1,9 +1,8 @@
-{
+ {
   "name": "flora",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node_modules/.bin/browserify client/index.js -o public/index.js",
     "start": "node server",
     "prestart": "npm run-script build"
@@ -14,7 +13,6 @@
     "serialport": "~1.0.8",
     "event-stream": "~3.0.7",
     "shoe": "0.0.7",
-    "ecstatic": "~0.1.6",
     "connect": "~2.6.1"
   },
   "devDependencies": {

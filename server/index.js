@@ -13,14 +13,6 @@ app
  .use(connect.logger('dev'))
  .use(connect.static(__dirname + '/../public'))
  .use(connect.directory(__dirname + '/../public'))
- .use(function (req, res) {
-  res.end(JSON.stringify({
-      url: req.url
-    , status: 404
-    , public: __dirname + '/../public'
-    , root: require('fs').readdirSync(__dirname + '/../public')
-  }, null, 2))
- })
 
 server = http.createServer(app)
 server.listen(process.env.PORT || 8080)
