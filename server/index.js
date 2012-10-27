@@ -1,5 +1,6 @@
 var sp = require('serialport')
   , es = require('event-stream')
+  , Stream = require('stream')
   , http = require('http')
   , shoe = require('shoe')
   , connect = require('connect')
@@ -42,6 +43,45 @@ shoe(function clientStream(stream) {
     .pipe(stream)
 }).install(server, '/flora')
 
-arduino.on('data'
-  , process.stdout.write.bind(process.stdout)
-);
+/**
+ * Debug logging of serial port output
+ */
+function watchData(emitter) {
+  emitter.on('data'
+    , process.stdout.write.bind(process.stdout)
+  );
+};
+watchData(arduino)
+
+/**
+ * If unable to connect to an Arduino,
+ * serve up some dummy data.
+ */
+arduino.once('error', function(err) {
+  if (!/Cannot open/gi.test(err.message)) throw err
+  
+  var time = 0
+
+  console.log('')
+  console.log('WARNING:', err.message)
+  console.log('Difficulties connecting to Arudino\'s serial port...')
+  console.log('')
+  console.log('Ensure you have the correct serial port set, and in')
+  console.log('the meantime here\'s some dummy data.')
+  console.log('')
+
+  arduino = new Stream
+
+  setInterval(function() {
+    var data = 'd1'
+
+    data += ' '
+    data += Math.floor(512 * (Math.sin(time) + 1))
+    data += '\n'
+
+    arduino.emit('data', data)
+    time += 0.0221
+  }, 100)
+
+  watchData(arduino)
+})
