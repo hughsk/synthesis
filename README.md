@@ -29,8 +29,9 @@ Build the client-side files and start up the server:
 $ npm start
 ```
 
-If you've got an Arduino handy, get some input on A2 and set the serial port to
-match:
+If you've got an Arduino handy, load up the script in
+[FloraSketch](https://github.com/hughsk/flora/tree/master/FloraSketch). Then get
+some input on A2 and set the serial port to match:
 
 ``` bash
 $ SERIAL='/dev/tty.usbmodemfa131' npm start
