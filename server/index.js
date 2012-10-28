@@ -39,6 +39,7 @@ shoe(function clientStream(stream) {
  * Debug logging of serial port output
  */
 function watchData(emitter) {
+  if (!process.env.LOG) return
   emitter.on('data'
     , process.stdout.write.bind(process.stdout)
   );
