@@ -1,5 +1,7 @@
 Copyright (C) 2012 by Hugh Kennedy (Flora)
+
 Copyright (C) 2011 by Ashima Arts (Simplex noise)
+
 Copyright (C) 2011 by Stefan Gustavson (Classic noise)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
