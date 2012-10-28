@@ -49,7 +49,7 @@ void main()
         curveWidthStart + xpos * (curveWidthEnd - curveWidthStart)
     ) * curveWidthScale;
 
-    vec4 pos =  vec4(growth * position, 1.0) + vec4(0.0, ampHeight, growth * ampWidth, 0.0);
+    vec4 pos =  vec4(growth * position, 1.0) + vec4(0.0, ampHeight, ampWidth, 0.0);
 
     gl_Position = projectionMatrix * modelViewMatrix * twirler * pos;
 }

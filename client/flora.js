@@ -228,7 +228,7 @@ function animate() {
 function render() {
 
     // mesh.rotation.y = Date.now() * 0.0007;
-    mesh.flowerMaterial.uniforms.growth.value = (Math.sin(Date.now() * 0.001) + 1) * 0.5;
+    mesh.flowerMaterial.uniforms.growth.value = (Math.sin(Date.now() * 0.001) + 1) * 0.6;
 
     renderer.render( scene, camera );
 };
