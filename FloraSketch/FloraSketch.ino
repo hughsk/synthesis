@@ -21,7 +21,7 @@ void setup() {
 
 void loop() {
   Serial.println(getPotentiometer(potentiometer, "d1"));  
-  delay(100);
+  delay(50);
 }
 
 String getPotentiometer(int pin, String prefix) {

@@ -27,7 +27,7 @@ shoe(function clientStream(stream) {
   arduino.on('data', listener)
 
   stream.on('end', function() {
-    arudino.removeListener('data', listener)
+    arduino.removeListener('data', listener)
     through.end()
   })
 
@@ -73,7 +73,7 @@ arduino.once('error', function(err) {
 
     arduino.emit('data', data)
     time += 0.0221
-  }, 100)
+  }, 50)
 
   watchData(arduino)
 })
