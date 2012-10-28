@@ -5,9 +5,14 @@ var sp = require('serialport')
   , shoe = require('shoe')
   , connect = require('connect')
 
-var arduino = new sp.SerialPort('/dev/tty.usbmodemfa131', {})
+var serial = process.env.SERIAL || '/dev/tty.usbmodemfa131'
+  , port = process.env.PORT || 8080
+  , arduino = new sp.SerialPort(serial, {})
   , app = connect()
   , server
+
+console.log('Serial port:', serial)
+console.log('Server port:', port)
 
 app
  .use(connect.logger('dev'))
@@ -15,7 +20,7 @@ app
  .use(connect.directory(__dirname + '/../public'))
 
 server = http.createServer(app)
-server.listen(process.env.PORT || 8080)
+server.listen(port)
 
 shoe(function clientStream(stream) {
   var through = es.through()

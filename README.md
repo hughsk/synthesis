@@ -10,5 +10,28 @@ dependant on:
 * [connect](http://npm.im/connect)
 * [shoe](http://npm.im/shoe)
 
-Plus a few other modules, and a good old [Arudino](http://arduino.cc) for input
-(it still runs without though).
+Plus a few extras, and a good old [Arudino](http://arduino.cc) for input (it
+still runs without though).
+
+## Setup
+
+Clone the repo and dependencies:
+
+``` bash
+$ git clone git@github.com:hughsk/flora.git
+$ cd flora
+$ npm install
+```
+
+Build the client-side files and start up the server:
+
+``` bash
+$ npm start
+```
+
+If you've got an Arduino handy, get some input on A2 and set the serial port to
+match:
+
+``` bash
+$ SERIAL='/dev/tty.usbmodemfa131' npm start
+```
