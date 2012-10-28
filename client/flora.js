@@ -193,8 +193,6 @@ flora.FlowerObject.prototype.decideOrientation = function(p, l, petal) {
 init();
 animate();
 
-var nextGrowth = 0
-
 function init() {
     scene = new THREE.Scene();
 
@@ -219,10 +217,6 @@ function init() {
 
     renderer.setSize( window.innerWidth, window.innerHeight);
 
-    flora.on('change:d1', function(value) {
-        nextGrowth = nextGrowth + (value - nextGrowth) * 0.01
-    })
-
     document.body.appendChild( renderer.domElement );
 };
 
@@ -233,8 +227,8 @@ function animate() {
 
 function render() {
 
-    mesh.rotation.y = Date.now() * 0.0007;
-    mesh.flowerMaterial.uniforms.growth.value = nextGrowth / 850;
+    // mesh.rotation.y = Date.now() * 0.0007;
+    mesh.flowerMaterial.uniforms.growth.value = (Math.sin(Date.now() * 0.001) + 1) * 0.5;
 
     renderer.render( scene, camera );
 };
