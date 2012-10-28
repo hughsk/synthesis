@@ -1,4 +1,4 @@
- {
+{
   "name": "flora",
   "version": "0.0.1",
   "main": "index.js",
@@ -13,10 +13,11 @@
     "serialport": "~1.0.8",
     "event-stream": "~3.0.7",
     "shoe": "0.0.7",
-    "connect": "~2.6.1"
+    "connect": "~2.6.1",
   },
   "devDependencies": {
     "browserify": "~1.16.1",
-    "domready": "~0.2.11"
+    "domready": "~0.2.11",
+    "ejs": "~0.8.3"
   }
 }
