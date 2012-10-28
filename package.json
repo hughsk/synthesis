@@ -7,7 +7,7 @@
     "start": "node server",
     "prestart": "npm run-script build"
   },
-  "license": "BSD",
+  "license": "MIT",
   "description": "ERROR: No README.md file found!",
   "dependencies": {
     "serialport": "~1.0.8",
