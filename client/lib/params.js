@@ -24,7 +24,7 @@ params.flower = {
   , blueness: 1.2
   , lines: 15
   , lineDarkness: 0.3
-  , dirtiness: 0.05
+  , dirtiness: 0 // 0.05
   , border: 0.4
   , borderSize: 0.1
   , wireframe: false

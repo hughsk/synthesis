@@ -6,68 +6,70 @@ var PetalGeometry = require('./petal-geometry')
 module.exports = FlowerObject = function() {
   THREE.Object3D.call(this);
 
-  this.flowerGeometry = new PetalGeometry();
-  this.flowerParams = clone(params);
+  this.params = clone(params);
 
-  this.flowerMaterial = FlowerMaterial(
-      this.flowerParams
-    , this.flowerGeometry
+  this.petals = [];
+  this.petalGeometry = new PetalGeometry();
+  this.material = FlowerMaterial(
+      this.params
+    , this.petalGeometry
   );
-
-  this.flowerMeshes = [];
 
   this.rebuild();
 };
 
 FlowerObject.prototype = Object.create(THREE.Object3D.prototype);
 
+function decideOrientation(petal, params, p, l) {
+  var lc = params.flower.layers
+    , pc = params.flower.petals
+
+  petal.rotation.y = 2 * Math.PI * (p / pc);
+  petal.rotation.y += params.flower.twist * l;
+
+  petal.rotation.z = params.flower.spreadOffset + params.flower.spread * Math.PI * l / lc;
+  petal.position.y = l / lc * params.flower.height;
+};
+
+FlowerObject.prototype.clear = function() {
+  var self = this
+
+  this.petals.forEach(function(child) {
+    self.remove(child);
+  });
+  this.petals = []
+};
+
 FlowerObject.prototype.rebuild = function() {
   var l, p, pc, lc, petal, self = this;
 
-  if (this.children && this.children.length) {
-    this.children.forEach(function(child) {
-      self.remove(child);
-    });
-  }
+  this.clear();
 
-  lc = this.flowerParams.flower.layers;
-  pc = this.flowerParams.flower.petals;
+  lc = this.params.flower.layers;
+  pc = this.params.flower.petals;
   
   for (l = 0; l < lc; l += 1) {
     for (p = 0; p < pc; p += 1) {
-      petal = new THREE.Mesh(this.flowerGeometry, this.flowerMaterial);
+      petal = new THREE.Mesh(this.petalGeometry, this.material);
       
-      this.decideOrientation(p, l, petal);
+      decideOrientation(petal, this.params, p, l);
 
-      this.flowerMeshes.push(petal);
+      this.petals.push(petal);
       this.add(petal);
     }
   }
 };
 
 FlowerObject.prototype.update = function() {
-  var l, p, pc, lc, petal, self = this;
+  var l, p, pc, lc, petal;
 
-  lc = this.flowerParams.flower.layers;
-  pc = this.flowerParams.flower.petals;
-  
+  lc = this.params.flower.layers;
+  pc = this.params.flower.petals;
+
   for (l = 0; l < lc; l += 1) {
     for (p = 0; p < pc; p += 1) {
       petal = this.children[l * pc + p];
-
-      this.decideOrientation(p, l, petal);
+      decideOrientation(petal, this.params, p, l);
     }
   }
-};
-
-FlowerObject.prototype.decideOrientation = function(p, l, petal) {
-  var lc = this.flowerParams.flower.layers
-    , pc = this.flowerParams.flower.petals
-
-  petal.rotation.y = 2 * Math.PI * (p / pc);
-  petal.rotation.y += this.flowerParams.flower.twist * l;
-  
-  petal.rotation.z = this.flowerParams.flower.spreadOffset + this.flowerParams.flower.spread * Math.PI * l / lc;
-
-  petal.position.y = l / lc * this.flowerParams.flower.height;
 };
