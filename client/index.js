@@ -5,8 +5,8 @@ var shoe = require('shoe')
 
 var trigger = new EventEmitter
 
-trigger.on('change', function(key, value) {
-  console.log([key, value])
+trigger.on('change:d1', function(key) {
+  console.log(['d1', value])
 });
 
 domready(function ready() {
@@ -20,5 +20,6 @@ domready(function ready() {
       if (data.length < 2) return
 
       trigger.emit('change', data[0], data[1])
+      trigger.emit('change:'+data[0], data[1])
     })
 })
