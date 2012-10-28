@@ -1,13 +1,13 @@
 var EventEmitter = require('events').EventEmitter
+  , mousetrap = require('mousetrap')
+  , debounce = require('debounce')
+  , clone = require('clone')
 
 var flora = module.exports = new EventEmitter
+  , PetalGeometry = require('./lib/petal-geometry.js')
+  , FlowerMaterial = require('./lib/flower-material.js')
 
-flora.PetalGeometry = require('./lib/petal-geometry.js')
-
-flora.shaders = {
-    petalVert: document.getElementById('petal-vertex').innerHTML
-  , petalFrag: document.getElementById('petal-fragment').innerHTML
-};
+flora.params = require('./lib/params.js')
 
 var camera
   , scene
@@ -16,118 +16,11 @@ var camera
   , material
   , mesh
 
-function FlowerMaterial(params, geometry) {
-    return new THREE.ShaderMaterial({
-          vertexShader: flora.shaders.petalVert
-        , fragmentShader: flora.shaders.petalFrag
-        , wireframe: params.flower.wireframe
-        , attributes: {
-            xpos: {
-                  type: 'f'
-                , value: geometry.data.lengths
-            }
-            , widths: {
-                  type: 'f'
-                , value: geometry.data.widths
-            }
-        }
-        , uniforms: {
-            curveHeightStart: {
-                type: 'f', value: params.petal.curveHeightStart
-            }
-            , curveHeightEnd: {
-                type: 'f', value: params.petal.curveHeightEnd
-            }
-            , curveHeightScale: {
-                type: 'f', value: params.petal.curveHeightScale
-            }
-            , curveWidthStart: {
-                type: 'f', value: params.petal.curveWidthStart
-            }
-            , curveWidthEnd: {
-                type: 'f', value: params.petal.curveWidthEnd
-            }
-            , curveWidthScale: {
-                type: 'f', value: params.petal.curveWidthScale
-            }
-            , lightness: {
-                type: 'f', value: params.flower.lightness
-            }
-            , redness: {
-                type: 'f', value: params.flower.redness
-            }
-            , greeness: {
-                type: 'f', value: params.flower.greeness
-            }
-            , blueness: {
-                type: 'f', value: params.flower.blueness
-            }
-            , lines: {
-                type: 'f', value: params.flower.lines
-            }
-            , lineDarkness: {
-                type: 'f', value: params.flower.lineDarkness
-            }
-            , growth: {
-                type: 'f', value: params.flower.growth
-            }
-            , twirl: {
-                type: 'f', value: params.flower.twirl
-            }
-            , dirtiness: {
-                type: 'f', value: params.flower.dirtiness
-            }
-            , border: {
-                type: 'f', value: params.flower.border
-            }
-            , borderSize: {
-                type: 'f', value: params.flower.borderSize
-            }
-        }
-    });
-};
-
-function FlowerParams() {
-    var params = {};
-
-    params.petal = {
-        curveHeightStart: -Math.PI
-        , curveHeightEnd:  Math.PI
-        , curveHeightScale: 30
-        , curveWidthStart: 0
-        , curveWidthEnd: Math.PI
-        , curveWidthScale: 50
-    };
-
-    params.flower = {
-          layers: 5
-        , petals: 9
-        , twist: Math.PI / 1.25
-        , height: 90
-        , spread: 0.5
-        , growth: 1
-        , twirl: 0.1
-        , spreadOffset: 0
-        , lightness: 0.5
-        , redness: 1.3
-        , greeness: 0.9
-        , blueness: 1.2
-        , lines: 15
-        , lineDarkness: 0.3
-        , dirtiness: 0.05
-        , border: 0.4
-        , borderSize: 0.1
-        , wireframe: false
-    };
-
-    return params;
-};
-
 flora.FlowerObject = function() {
     THREE.Object3D.call(this);
 
-    this.flowerGeometry = new flora.PetalGeometry();
-    this.flowerParams = FlowerParams();
+    this.flowerGeometry = new PetalGeometry();
+    this.flowerParams = clone(flora.params);
 
     this.flowerMaterial = FlowerMaterial(
           this.flowerParams
