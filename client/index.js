@@ -2,12 +2,14 @@ var shoe = require('shoe')
   , es = require('event-stream')
   , domready = require('domready')
   , EventEmitter = require('events').EventEmitter
+  , flora = require('./flora.js')
 
-var trigger = new EventEmitter
-
-trigger.on('change:d1', function(key) {
-  console.log(['d1', value])
-});
+// workaround for chrome bug:
+// http://code.google.com/p/chromium/issues/detail?id=35980#c12
+if ( window.innerWidth === 0 ) {
+    window.innerWidth = parent.innerWidth;
+    window.innerHeight = parent.innerHeight;
+}
 
 domready(function ready() {
   var arduino = shoe('/flora')
@@ -19,7 +21,7 @@ domready(function ready() {
       data = data.split(/\s+/g)
       if (data.length < 2) return
 
-      trigger.emit('change', data[0], data[1])
-      trigger.emit('change:'+data[0], data[1])
+      flora.emit('change', data[0], data[1])
+      flora.emit('change:'+data[0], data[1])
     })
 })
