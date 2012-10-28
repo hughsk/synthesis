@@ -8,6 +8,7 @@ var files = {
 
 Object.keys(files).forEach(function (name) {
   files[name] = fs.readFileSync(files[name], 'utf8')
+    .replace(/^\s+|\s$/g, '')
 })
 
 var templates = {

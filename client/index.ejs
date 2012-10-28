@@ -7,11 +7,13 @@
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
-        <div id="wrapper">
-            <div id="main" role="main">
-                
-            </div>
-        </div>
+        <script type="x-shader/x-vertex" id="petal-vertex">
+            <%- files['petal-vertex'] %>
+        </script>
+        <script type="x-shader/x-vertex" id="petal-fragment">
+            <%- files['petal-fragment'] %>
+        </script>
+        <script src="/vendor/three.min.js"></script>
         <script src="/index.js"></script>
     </body>
 </html>
