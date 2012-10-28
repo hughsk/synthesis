@@ -1,4 +1,5 @@
 var EventEmitter = require('events').EventEmitter
+  , mousetrap = require('mousetrap')
 
 var flora = module.exports = new EventEmitter
   , FlowerObject = require('./lib/flower-object.js')
@@ -53,3 +54,27 @@ flora.render = function() {
 
 flora.init()
 flora.animate()
+
+flora.on('change:d1', function(d1) {
+  mesh.material.uniforms.growth.value = d1 / 1000
+})
+
+;[1,2,3,4,5,6,7,8,9].forEach(function(n) {
+  mousetrap.bind(n+'', function() {
+    mesh.params.flower.layers = n
+    mesh.rebuild()
+  });
+  mousetrap.bind('shift+'+n, function() {
+    mesh.params.flower.petals = n
+    mesh.rebuild()
+  })
+})
+
+mousetrap.bind('up', function() {
+  mesh.params.flower.spread *= 1.1
+  mesh.update()
+})
+mousetrap.bind('down', function() {
+  mesh.params.flower.spread /= 1.1
+  mesh.update()
+})
