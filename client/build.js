@@ -2,8 +2,8 @@ var ejs = require('ejs')
   , fs = require('fs')
 
 var files = {
-    'petal-fragment' : __dirname + '/../lib/shaders/petal-fragment.glsl'
-  , 'petal-vertex'   : __dirname + '/../lib/shaders/petal-vertex.glsl'
+    'petal-fragment' : __dirname + '/lib/shaders/petal-fragment.glsl'
+  , 'petal-vertex'   : __dirname + '/lib/shaders/petal-vertex.glsl'
 };
 
 Object.keys(files).forEach(function (name) {
