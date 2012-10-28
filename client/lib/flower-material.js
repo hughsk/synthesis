@@ -1,70 +1,43 @@
 var shaders = require('./shaders')
 
 module.exports = function FlowerMaterial(params, geometry) {
-    var shader = {
-          vertexShader: shaders.petalVert
-        , fragmentShader: shaders.petalFrag
-        , wireframe: params.flower.wireframe
-    };
+  var shader = {
+      vertexShader: shaders.petalVert
+    , fragmentShader: shaders.petalFrag
+    , wireframe: params.flower.wireframe
+  };
 
-    shader.attributes = {
-          xpos: { type: 'f', value: geometry.data.lengths }
-        , widths: { type: 'f', value: geometry.data.widths }
-    };
+  shader.attributes = {
+      xpos: { type: 'f', value: geometry.data.lengths }
+    , widths: { type: 'f', value: geometry.data.widths }
+  };
 
-    shader.uniforms = {
-        curveHeightStart: {
-            type: 'f', value: params.petal.curveHeightStart
-        }
-        , curveHeightEnd: {
-            type: 'f', value: params.petal.curveHeightEnd
-        }
-        , curveHeightScale: {
-            type: 'f', value: params.petal.curveHeightScale
-        }
-        , curveWidthStart: {
-            type: 'f', value: params.petal.curveWidthStart
-        }
-        , curveWidthEnd: {
-            type: 'f', value: params.petal.curveWidthEnd
-        }
-        , curveWidthScale: {
-            type: 'f', value: params.petal.curveWidthScale
-        }
-        , lightness: {
-            type: 'f', value: params.flower.lightness
-        }
-        , redness: {
-            type: 'f', value: params.flower.redness
-        }
-        , greeness: {
-            type: 'f', value: params.flower.greeness
-        }
-        , blueness: {
-            type: 'f', value: params.flower.blueness
-        }
-        , lines: {
-            type: 'f', value: params.flower.lines
-        }
-        , lineDarkness: {
-            type: 'f', value: params.flower.lineDarkness
-        }
-        , growth: {
-            type: 'f', value: params.flower.growth
-        }
-        , twirl: {
-            type: 'f', value: params.flower.twirl
-        }
-        , dirtiness: {
-            type: 'f', value: params.flower.dirtiness
-        }
-        , border: {
-            type: 'f', value: params.flower.border
-        }
-        , borderSize: {
-            type: 'f', value: params.flower.borderSize
-        }
-    };
+  shader.uniforms = {
+      curveHeightStart : params.petal.curveHeightStart
+    , curveHeightEnd   : params.petal.curveHeightEnd
+    , curveHeightScale : params.petal.curveHeightScale
+    , curveWidthStart  : params.petal.curveWidthStart
+    , curveWidthEnd    : params.petal.curveWidthEnd
+    , curveWidthScale  : params.petal.curveWidthScale
+    , lightness        : params.flower.lightness
+    , redness          : params.flower.redness
+    , greeness         : params.flower.greeness
+    , blueness         : params.flower.blueness
+    , lines            : params.flower.lines
+    , lineDarkness     : params.flower.lineDarkness
+    , growth           : params.flower.growth
+    , twirl            : params.flower.twirl
+    , dirtiness        : params.flower.dirtiness
+    , border           : params.flower.border
+    , borderSize       : params.flower.borderSize
+  };
 
-    return new THREE.ShaderMaterial(shader);
+  Object.keys(shader.uniforms).forEach(function(key) {
+    shader.uniforms[key] = {
+        type: 'f'
+      , value: shader.uniforms[key]
+    }
+  })
+
+  return new THREE.ShaderMaterial(shader);
 };

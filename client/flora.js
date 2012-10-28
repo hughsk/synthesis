@@ -8,50 +8,48 @@ var camera
   , renderer
   , mesh
 
-init();
-animate();
+flora.init = function() {
+  scene = new THREE.Scene();
 
-function init() {
-    scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(
+      75
+    , window.innerWidth / window.innerHeight
+    , 1
+    , 10000
+  )
+  
+  camera.position.y = 300
+  camera.position.z = 1480
 
-    camera = new THREE.PerspectiveCamera(
-          75
-        , window.innerWidth / window.innerHeight
-        , 1
-        , 10000
-    )
-    
-    camera.position.y = 300
-    camera.position.z = 1480
+  mesh = new FlowerObject()
 
-    mesh = new FlowerObject()
+  mesh.position.x = 0
+  mesh.position.z = 500
 
-    mesh.position.x = 0
-    mesh.position.z = 500
+  scene.add(camera)
+  scene.add(mesh)
 
-    scene.add(camera)
-    scene.add(mesh)
+  renderer = new THREE.WebGLRenderer({
+      antialias: true
+    , precision: 'highp'
+  });
 
-    renderer = new THREE.WebGLRenderer({
-          antialias: true
-        , precision: 'highp'
-    });
+  renderer.setSize(
+      window.innerWidth
+    , window.innerHeight
+  );
 
-    renderer.setSize( window.innerWidth, window.innerHeight);
-
-    document.body.appendChild( renderer.domElement );
+  document.body.appendChild(renderer.domElement);
 };
 
-function animate() {
-    requestAnimationFrame( animate );
-    render();
+flora.animate = function() {
+  requestAnimationFrame(flora.animate);
+  flora.render();
 };
 
-function render() {
-
-    // mesh.rotation.y = Date.now() * 0.0007;
-    // mesh.flowerMaterial.uniforms.growth.value = (Math.sin(Date.now() * 0.001) + 1) * 0.6;
-    // mesh.flowerMaterial.uniforms.twirl.value = (Math.sin(Date.now() * 0.001) + 1) * 0.5;
-
-    renderer.render( scene, camera );
+flora.render = function() {
+  renderer.render( scene, camera );
 };
+
+flora.init()
+flora.animate()
