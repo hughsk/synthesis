@@ -13,15 +13,14 @@
  * d1 312
  */
 
-int potentiometer = 2;
-
 void setup() {
   Serial.begin(9600);
 }
 
 void loop() {
-  Serial.println(getPotentiometer(potentiometer, "d1"));  
-  delay(50);
+  Serial.println(getPotentiometer(2, "d2"));
+  Serial.println(getPotentiometer(1, "d1"));
+  delay(100);
 }
 
 String getPotentiometer(int pin, String prefix) {

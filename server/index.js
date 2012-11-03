@@ -77,6 +77,10 @@ arduino.once('error', function(err) {
     data += Math.floor(512 * (Math.sin(time) + 1))
     data += '\n'
 
+    data += 'd2 '
+    data += Math.floor(512 * (Math.sin(time*1.714 + 0.05) + 1))
+    data += '\n'
+
     arduino.emit('data', data)
     time += 0.0221
   }, 50)
