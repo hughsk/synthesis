@@ -31,6 +31,14 @@ function decideOrientation(petal, params, p, l) {
   petal.position.y = l / lc * params.flower.height;
 };
 
+FlowerObject.prototype.tick = function() {
+  this.params.petal.curveHeightStart += this.params.timed.heightPhaseSpeed
+  this.params.petal.curveHeightEnd += this.params.timed.heightPhaseSpeed
+
+  this.material.uniforms.curveHeightStart.value = this.params.petal.curveHeightStart
+  this.material.uniforms.curveHeightEnd.value = this.params.petal.curveHeightEnd
+};
+
 FlowerObject.prototype.clear = function() {
   var self = this
 
@@ -41,23 +49,33 @@ FlowerObject.prototype.clear = function() {
 };
 
 FlowerObject.prototype.rebuild = function() {
-  var l, p, pc, lc, petal, self = this;
-
-  this.clear();
+  var l, p, pc, lc
+  var self = this
+    , petal
 
   lc = this.params.flower.layers;
   pc = this.params.flower.petals;
   
   for (l = 0; l < lc; l += 1) {
     for (p = 0; p < pc; p += 1) {
-      petal = new THREE.Mesh(this.petalGeometry, this.material);
-      
-      decideOrientation(petal, this.params, p, l);
+      petal = this.children[l * pc + p]
 
-      this.petals.push(petal);
-      this.add(petal);
+      if (!petal) {
+        petal = new THREE.Mesh(this.petalGeometry, this.material);
+        this.petals.push(petal);
+        this.add(petal);
+      }
+  
+      petal.visible = true    
+      decideOrientation(petal, this.params, p, l);
     }
   }
+
+  this.petals.slice(
+    Math.ceil(this.params.flower.layers) * Math.ceil(this.params.flower.petals)
+  ).map(function(petal) {
+    petal.visible = false
+  })
 };
 
 FlowerObject.prototype.update = function() {

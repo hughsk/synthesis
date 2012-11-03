@@ -1,4 +1,4 @@
-var params = module.exports = {};
+var params = module.exports = {}
 
 params.petal = {
     curveHeightStart: -Math.PI
@@ -29,3 +29,7 @@ params.flower = {
   , borderSize: 0.1
   , wireframe: false
 };
+
+params.timed = {
+    heightPhaseSpeed: 0
+}

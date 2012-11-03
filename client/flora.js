@@ -4,11 +4,12 @@ var EventEmitter = require('events').EventEmitter
 
 var flora = module.exports = new EventEmitter
   , FlowerObject = require('./lib/flower-object.js')
+  , gui = require('./lib/gui.js')
 
 var camera
   , scene
   , renderer
-  , mesh
+  , meshes = []
 
 flora.init = function() {
   scene = new THREE.Scene();
@@ -23,13 +24,15 @@ flora.init = function() {
   camera.position.y = 300
   camera.position.z = 1480
 
-  mesh = new FlowerObject()
+  meshes.push(new FlowerObject)
 
-  mesh.position.x = 0
-  mesh.position.z = 500
+  meshes[0].position.x = 0
+  meshes[0].position.z = 500
 
   scene.add(camera)
-  scene.add(mesh)
+  meshes.forEach(function(mesh) {
+    scene.add(mesh)
+  })
 
   renderer = new THREE.WebGLRenderer({
       antialias: true
@@ -42,6 +45,8 @@ flora.init = function() {
   );
 
   document.body.appendChild(renderer.domElement);
+
+  flora.gui = gui(meshes)
 };
 
 flora.animate = function() {
@@ -50,37 +55,38 @@ flora.animate = function() {
 };
 
 flora.render = function() {
+  meshes.forEach(function(mesh) { mesh.tick() })
   renderer.render( scene, camera );
 };
 
 flora.init()
 flora.animate()
 
-flora.on('change:d1', function(d1) {
-  mesh.material.uniforms.growth.value = d1 / 500
-})
+// flora.on('change:d1', function(d1) {
+//   mesh.material.uniforms.growth.value = d1 / 500
+// })
 
-var chs = interpolator.linear(-Math.PI * 4, Math.PI * 4)
-flora.on('change:d2', function(d2) {
-  mesh.material.uniforms.curveHeightStart.value = chs(d2 / 1000)
-})
+// var chs = interpolator.linear(-Math.PI * 4, Math.PI * 4)
+// flora.on('change:d2', function(d2) {
+//   mesh.material.uniforms.curveHeightStart.value = chs(d2 / 1000)
+// })
 
-;[1,2,3,4,5,6,7,8,9].forEach(function(n) {
-  mousetrap.bind(n+'', function() {
-    mesh.params.flower.layers = n
-    mesh.rebuild()
-  });
-  mousetrap.bind('shift+'+n, function() {
-    mesh.params.flower.petals = n
-    mesh.rebuild()
-  })
-})
+// ;[1,2,3,4,5,6,7,8,9].forEach(function(n) {
+//   mousetrap.bind(n+'', function() {
+//     mesh.params.flower.layers = n
+//     mesh.rebuild()
+//   });
+//   mousetrap.bind('shift+'+n, function() {
+//     mesh.params.flower.petals = n
+//     mesh.rebuild()
+//   })
+// })
 
-mousetrap.bind('up', function() {
-  mesh.params.flower.spread *= 1.1
-  mesh.update()
-})
-mousetrap.bind('down', function() {
-  mesh.params.flower.spread /= 1.1
-  mesh.update()
-})
+// mousetrap.bind('up', function() {
+//   mesh.params.flower.spread *= 1.1
+//   mesh.update()
+// })
+// mousetrap.bind('down', function() {
+//   mesh.params.flower.spread /= 1.1
+//   mesh.update()
+// })
