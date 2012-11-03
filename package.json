@@ -13,7 +13,8 @@
     "serialport": "~1.0.8",
     "event-stream": "~3.0.7",
     "shoe": "0.0.7",
-    "connect": "~2.6.1"
+    "connect": "~2.6.1",
+    "interpolator": "0.0.1"
   },
   "devDependencies": {
     "browserify": "~1.16.1",

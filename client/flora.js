@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter
   , mousetrap = require('mousetrap')
+  , interpolator = require('interpolator')
 
 var flora = module.exports = new EventEmitter
   , FlowerObject = require('./lib/flower-object.js')
@@ -56,7 +57,12 @@ flora.init()
 flora.animate()
 
 flora.on('change:d1', function(d1) {
-  mesh.material.uniforms.growth.value = d1 / 1000
+  mesh.material.uniforms.growth.value = d1 / 500
+})
+
+var chs = interpolator.linear(-Math.PI * 4, Math.PI * 4)
+flora.on('change:d2', function(d2) {
+  mesh.material.uniforms.curveHeightStart.value = chs(d2 / 1000)
 })
 
 ;[1,2,3,4,5,6,7,8,9].forEach(function(n) {
