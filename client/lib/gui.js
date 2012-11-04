@@ -48,19 +48,46 @@ module.exports = function gui(meshes) {
     };
   };
 
+  function flowerVisible(number, total) {
+    var visible
+
+    if (total >= 4 || total === 1) {
+      visible = number < total
+    } else
+    if (total === 3) {
+      visible = number < 3
+    } else
+    if (total === 2) {
+      visible = !number || number > 2
+    }
+
+    return visible
+  };
+
   /**
    * Proximity Sensors
    */
   addProp(proximity, 'growth', 0, 1.5, params.flower.growth)
     .name('Growth')
     .step(0.01)
-    .onChange(updateUniforms('growth'))
+    .onChange(update(function(goal, mesh, n) {
+      mesh.params.flower.growth = goal
+      if (!mesh.params.flower.visible) return
+      mesh.params.timed.growthGoal = goal
+    }))
 
   addProp(proximity, 'heightphase', -0.4, 0.4, 0)
-    .name('Height Phase Speed')
+    .name('Phase Speed')
     .step(0.01)
     .onChange(update(function(phase, mesh) {
       mesh.params.timed.heightPhaseSpeed = phase
+    }))
+
+  addProp(proximity, 'heightlength', -12, 12, 0)
+    .name('Wavelength')
+    .step(0.01)
+    .onChange(update(function(waveLength, mesh) {
+      mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + waveLength
     }))
 
   /**
@@ -89,4 +116,24 @@ module.exports = function gui(meshes) {
     .onChange(updateGeometry(function (twist, mesh) {
       mesh.params.flower.twist = twist
     }, 'update'))
+
+  addProp(maybe, 'offset', 0, 2, params.timed.offset)
+    .name('Disorder')
+    .step(0.01)
+    .onChange(update(function (offset, mesh) {
+      mesh.params.timed.offset = offset
+    }))
+
+  addProp(maybe, 'amplitude', 0, 120, params.petal.curveHeightScale)
+    .name('Amplitude')
+    .step(0.5)
+    .onChange(updateUniforms('curveHeightScale'))
+
+  addProp(maybe, 'flowers', 1, 4, 4)
+    .name('Flowers')
+    .step(1)
+    .onChange(update(function(flowers, mesh, n) {
+      mesh.params.flower.visible = flowerVisible(n, flowers)
+      mesh.params.timed.growthGoal = mesh.params.flower.visible ? mesh.params.flower.growth : 0
+    }))
 };

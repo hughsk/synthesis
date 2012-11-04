@@ -1,13 +1,17 @@
 var PetalGeometry = require('./petal-geometry')
   , FlowerMaterial = require('./flower-material')
+  , interpolator = require('interpolator')
   , params = require('./params')
   , clone = require('clone')
 
-module.exports = FlowerObject = function() {
+var sine = interpolator.sin(0, 1)
+
+module.exports = FlowerObject = function(fraction) {
   THREE.Object3D.call(this);
 
   this.params = clone(params);
 
+  this.fraction = fraction * Math.PI * 2
   this.petals = [];
   this.petalGeometry = new PetalGeometry();
   this.material = FlowerMaterial(
@@ -32,11 +36,22 @@ function decideOrientation(petal, params, p, l) {
 };
 
 FlowerObject.prototype.tick = function() {
-  this.params.petal.curveHeightStart += this.params.timed.heightPhaseSpeed
-  this.params.petal.curveHeightEnd += this.params.timed.heightPhaseSpeed
+  var offset
+
+  this.material.uniforms.growth.value = interpolator.linear(
+      this.material.uniforms.growth.value
+    , this.params.timed.growthGoal
+  )(0.055)
+
+  offset = sine(Date.now() / 2000 + this.fraction)
+  offset = interpolator.linear(1, offset)(this.params.timed.offset)
+
+  this.params.petal.curveHeightStart += this.params.timed.heightPhaseSpeed * offset
+  this.params.petal.curveHeightEnd += this.params.timed.heightPhaseSpeed * offset
 
   this.material.uniforms.curveHeightStart.value = this.params.petal.curveHeightStart
   this.material.uniforms.curveHeightEnd.value = this.params.petal.curveHeightEnd
+
 };
 
 FlowerObject.prototype.clear = function() {

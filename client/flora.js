@@ -24,10 +24,24 @@ flora.init = function() {
   camera.position.y = 300
   camera.position.z = 1480
 
-  meshes.push(new FlowerObject)
+  meshes.push(new FlowerObject(1/4))
+  meshes.push(new FlowerObject(2/4))
+  meshes.push(new FlowerObject(3/4))
+  meshes.push(new FlowerObject(4/4))
 
   meshes[0].position.x = 0
   meshes[0].position.z = 500
+
+  meshes[1].position.x = -800
+  meshes[1].rotation.z = 0.5
+  meshes[1].rotation.y = 0.75
+
+  meshes[2].position.x = 800
+  meshes[2].rotation.z = -0.5
+  meshes[2].rotation.y = -0.75
+
+  meshes[3].position.z = -700
+  meshes[3].position.y = 900
 
   scene.add(camera)
   meshes.forEach(function(mesh) {

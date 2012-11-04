@@ -28,8 +28,11 @@ params.flower = {
   , border: 0.4
   , borderSize: 0.1
   , wireframe: false
+  , visible: true
 };
 
 params.timed = {
     heightPhaseSpeed: 0
+  , growthGoal: params.flower.growth
+  , offset: 0
 }
