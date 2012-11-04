@@ -6831,6 +6831,8 @@ module.exports = function gui(meshes) {
     , test = gui.addFolder('Test')
     , properties = {}
 
+  gui.remember(properties)
+
   theremin.open()
   proximity.open()
   potent.open()
