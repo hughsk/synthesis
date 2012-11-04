@@ -12,27 +12,3 @@ dependant on:
 
 Plus a few extras, and a good old [Arudino](http://arduino.cc) for input (it
 still runs without though).
-
-## Setup
-
-Clone the repo and dependencies:
-
-``` bash
-$ git clone git@github.com:hughsk/flora.git
-$ cd flora
-$ npm install
-```
-
-Build the client-side files and start up the server:
-
-``` bash
-$ npm start
-```
-
-If you've got an Arduino handy, load up the script in
-[FloraSketch](https://github.com/hughsk/flora/tree/master/FloraSketch). Then get
-some input on A2 and set the serial port to match:
-
-``` bash
-$ SERIAL='/dev/tty.usbmodemfa131' npm start
-```

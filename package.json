@@ -21,7 +21,6 @@
     "domready": "~0.2.11",
     "ejs": "~0.8.3",
     "clone": "~0.1.1",
-    "debounce": "0.0.1",
-    "mousetrap": "0.0.1"
+    "debounce": "0.0.1"
   }
 }

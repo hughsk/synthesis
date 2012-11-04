@@ -3,12 +3,14 @@ var params = require('./params')
 module.exports = function gui(meshes) {
   var gui = new dat.GUI
 
-  var proximity = gui.addFolder('Proximity Sensors')
+  var theremin = gui.addFolder('Theremin')
+    , proximity = gui.addFolder('Proximity Sensors')
     , potent = gui.addFolder('Potentiometers')
     , maybe = gui.addFolder('Maybe')
     , test = gui.addFolder('Test')
     , properties = {}
 
+  theremin.open()
   proximity.open()
   potent.open()
   maybe.open()
@@ -58,16 +60,16 @@ module.exports = function gui(meshes) {
       visible = number < 3
     } else
     if (total === 2) {
-      visible = !number || number > 2
+      visible = number && number < 3
     }
 
     return visible
   };
 
   /**
-   * Proximity Sensors
+   * Theremin
    */
-  addProp(proximity, 'growth', 0, 1.5, params.flower.growth)
+  addProp(theremin, 'growth', 0, 1.5, params.flower.growth)
     .name('Growth')
     .step(0.01)
     .onChange(update(function(goal, mesh, n) {
@@ -75,6 +77,10 @@ module.exports = function gui(meshes) {
       if (!mesh.params.flower.visible) return
       mesh.params.timed.growthGoal = goal
     }))
+
+  /**
+   * Proximity Sensors
+   */
 
   addProp(proximity, 'heightphase', -0.4, 0.4, 0)
     .name('Phase Speed')
@@ -89,6 +95,11 @@ module.exports = function gui(meshes) {
     .onChange(update(function(waveLength, mesh) {
       mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + waveLength
     }))
+
+  addProp(proximity, 'twirl', -2 * Math.PI, 2 * Math.PI, params.petal.twirl)
+    .name('Twirl')
+    .step(0.01)
+    .onChange(updateUniforms('twirl'))
 
   /**
    * Potentiometers
@@ -107,6 +118,11 @@ module.exports = function gui(meshes) {
       mesh.params.flower.petals = petals
     }))
 
+  addProp(potent, 'amplitude', 0, 120, params.petal.curveHeightScale)
+    .name('Amplitude')
+    .step(0.5)
+    .onChange(updateUniforms('curveHeightScale'))
+
   /**
    * Maybe
    */
@@ -124,11 +140,6 @@ module.exports = function gui(meshes) {
       mesh.params.timed.offset = offset
     }))
 
-  addProp(maybe, 'amplitude', 0, 120, params.petal.curveHeightScale)
-    .name('Amplitude')
-    .step(0.5)
-    .onChange(updateUniforms('curveHeightScale'))
-
   addProp(maybe, 'flowers', 1, 4, 4)
     .name('Flowers')
     .step(1)
@@ -136,4 +147,5 @@ module.exports = function gui(meshes) {
       mesh.params.flower.visible = flowerVisible(n, flowers)
       mesh.params.timed.growthGoal = mesh.params.flower.visible ? mesh.params.flower.growth : 0
     }))
+
 };

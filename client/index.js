@@ -11,7 +11,7 @@ if ( window.innerWidth === 0 ) {
     window.innerHeight = parent.innerHeight;
 }
 
-domready(function ready() {
+function ready() {
   var arduino = shoe('/flora')
     , split = es.split('\n')
 
@@ -24,4 +24,8 @@ domready(function ready() {
       flora.emit('change', data[0], data[1])
       flora.emit('change:'+data[0], data[1])
     })
-})
+};
+
+if (!window.isStatic) {
+  domready(ready)
+}

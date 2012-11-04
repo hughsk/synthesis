@@ -21,5 +21,6 @@ Object.keys(templates).forEach(function (name) {
 });
 
 fs.writeFileSync(__dirname + '/../public/index.html', templates.index({
-  files: files
+    files: files
+  , isStatic: !!process.env.STATIC
 }), 'utf8')

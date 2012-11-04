@@ -1,5 +1,4 @@
 var EventEmitter = require('events').EventEmitter
-  , mousetrap = require('mousetrap')
   , interpolator = require('interpolator')
 
 var flora = module.exports = new EventEmitter
@@ -83,24 +82,4 @@ flora.animate()
 // var chs = interpolator.linear(-Math.PI * 4, Math.PI * 4)
 // flora.on('change:d2', function(d2) {
 //   mesh.material.uniforms.curveHeightStart.value = chs(d2 / 1000)
-// })
-
-// ;[1,2,3,4,5,6,7,8,9].forEach(function(n) {
-//   mousetrap.bind(n+'', function() {
-//     mesh.params.flower.layers = n
-//     mesh.rebuild()
-//   });
-//   mousetrap.bind('shift+'+n, function() {
-//     mesh.params.flower.petals = n
-//     mesh.rebuild()
-//   })
-// })
-
-// mousetrap.bind('up', function() {
-//   mesh.params.flower.spread *= 1.1
-//   mesh.update()
-// })
-// mousetrap.bind('down', function() {
-//   mesh.params.flower.spread /= 1.1
-//   mesh.update()
 // })
