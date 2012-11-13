@@ -1,4 +1,6 @@
 var params = require('./params')
+  , raf = require('./raf')
+  , EventEmitter = require('events').EventEmitter
 
 module.exports = function gui(meshes) {
   var gui = new dat.GUI
@@ -8,7 +10,10 @@ module.exports = function gui(meshes) {
     , potent = gui.addFolder('Potentiometers')
     , maybe = gui.addFolder('Maybe')
     , test = gui.addFolder('Test')
-    , properties = {}
+    , properties = new EventEmitter
+    , rounded = {
+      petals: true
+    }
 
   gui.remember(properties)
 
@@ -109,21 +114,24 @@ module.exports = function gui(meshes) {
   addProp(potent, 'layers', 1, 20, params.flower.layers)
     .name('Layers')
     .step(0.05)
-    .onChange(updateGeometry(function (layers, mesh) {
-      mesh.params.flower.layers = layers
-    }))
+  
+  properties.on('change:layers', updateGeometry(function (layers, mesh) {
+    mesh.params.flower.layers = layers
+  }))
 
   addProp(potent, 'petals', 1, 20, params.flower.petals)
     .name('Petals')
     .step(1)
-    .onChange(updateGeometry(function (petals, mesh) {
-      mesh.params.flower.petals = petals
-    }))
+
+  properties.on('change:petals', updateGeometry(function (petals, mesh) {
+    mesh.params.flower.petals = petals
+  }))
 
   addProp(potent, 'amplitude', 0, 120, params.petal.curveHeightScale)
     .name('Amplitude')
     .step(0.5)
-    .onChange(updateUniforms('curveHeightScale'))
+  
+  properties.on('change:amplitude', updateUniforms('curveHeightScale'))
 
   /**
    * Maybe
@@ -131,16 +139,18 @@ module.exports = function gui(meshes) {
   addProp(maybe, 'twist', 0, Math.PI, params.flower.twist)
     .name('Twist')
     .step(0.01)
-    .onChange(updateGeometry(function (twist, mesh) {
-      mesh.params.flower.twist = twist
-    }, 'update'))
+
+  properties.on('change:twist', updateGeometry(function (twist, mesh) {
+    mesh.params.flower.twist = twist
+  }, 'update'))
 
   addProp(maybe, 'offset', 0, 2, params.timed.offset)
     .name('Disorder')
     .step(0.01)
-    .onChange(update(function (offset, mesh) {
-      mesh.params.timed.offset = offset
-    }))
+
+  properties.on('change:offset', update(function (offset, mesh) {
+    mesh.params.timed.offset = offset
+  }))
 
   addProp(maybe, 'flowers', 1, 4, 4)
     .name('Flowers')
@@ -150,4 +160,55 @@ module.exports = function gui(meshes) {
       mesh.params.timed.growthGoal = mesh.params.flower.visible ? mesh.params.flower.growth : 0
     }))
 
+  /**
+   * Automatically tween properties when modified
+   */
+  Object.keys(properties).forEach(function(property) {
+    var current = properties[property]
+      , target = current
+      , updating = false
+
+    function updater() {
+      var diff
+
+      if (current === target) {
+        updating = false
+        return
+      }
+
+      diff = Math.abs(current - target)
+
+      if (rounded[property]) {
+        current = Math[
+          target > current ? 'ceil' : 'floor'
+        ](current + (target - current) * 0.5)
+      } else {
+        current = current + (target - current) * 0.05
+      }
+
+      properties.emit('change', property, current)
+      properties.emit('change:'+property, current)
+
+      if (diff < 0.005) current = target
+
+      raf(updater)
+    };
+
+    properties.__defineGetter__(property, function() {
+      return current
+    })
+
+    properties.__defineSetter__(property, function(val) {
+      target = val
+
+      if (!updating) {
+        updating = true
+        updater()
+      }
+    });
+  })
+
+  gui.properties = properties
+
+  return gui
 };

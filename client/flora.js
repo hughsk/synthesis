@@ -60,6 +60,7 @@ flora.init = function() {
   document.body.appendChild(renderer.domElement);
 
   flora.gui = gui(meshes)
+  console.log(flora)
 };
 
 flora.animate = function() {
@@ -75,11 +76,36 @@ flora.render = function() {
 flora.init()
 flora.animate()
 
-// flora.on('change:d1', function(d1) {
-//   mesh.material.uniforms.growth.value = d1 / 500
-// })
+flora.update = function(property, value) {
+  meshes.forEach(function(mesh) {
+    flora.update[property](mesh, value)
+  });
+};
 
-// var chs = interpolator.linear(-Math.PI * 4, Math.PI * 4)
-// flora.on('change:d2', function(d2) {
-//   mesh.material.uniforms.curveHeightStart.value = chs(d2 / 1000)
+function clamp(val, min, max) {
+  if (val < min) return min
+  if (val > max) return max
+  return val
+};
+
+flora.on('change:t0', function(d2) {
+  meshes.forEach(function(mesh) {
+    mesh.params.timed.growthGoal = Math.max((d2 - 65) / 200, 0)
+  })
+})
+flora.on('change:p0', function(d2) {
+  meshes.forEach(function(mesh) {
+    mesh.params.timed.heightPhaseSpeed = Math.max((d2 - 65) / 1000, 0)
+  })
+})
+flora.on('change:d0', function(d0) {
+  flora.gui.properties.layers = Math.round(clamp(20 - (d0 - 65) / 50, 1, 20))
+})
+flora.on('change:d1', function(d1) {
+  flora.gui.properties.petals = Math.round(clamp(20 - (d1 - 65) / 50, 1, 20))
+})
+// flora.on('change:p0', function(waveLength) {
+//   meshes.forEach(function(mesh) {
+//     mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + Math.max((waveLength - 65) / 10, 0)
+//   })
 // })

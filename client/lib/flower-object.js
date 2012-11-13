@@ -14,6 +14,7 @@ module.exports = FlowerObject = function(fraction) {
   this.fraction = fraction * Math.PI * 2
   this.petals = [];
   this.petalGeometry = new PetalGeometry();
+  this.rebuilt = false
   this.material = FlowerMaterial(
       this.params
     , this.petalGeometry
@@ -38,6 +39,7 @@ function decideOrientation(petal, params, p, l) {
 FlowerObject.prototype.tick = function() {
   var offset
 
+  this.rebuilt = false
   this.material.uniforms.growth.value = interpolator.linear(
       this.material.uniforms.growth.value
     , this.params.timed.growthGoal
@@ -70,7 +72,10 @@ FlowerObject.prototype.rebuild = function() {
 
   lc = this.params.flower.layers;
   pc = this.params.flower.petals;
-  
+
+  if (this.rebuilt) return
+  this.rebuilt = true
+
   for (l = 0; l < lc; l += 1) {
     for (p = 0; p < pc; p += 1) {
       petal = this.children[l * pc + p]

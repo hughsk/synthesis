@@ -14,6 +14,7 @@ if ( window.innerWidth === 0 ) {
 function ready() {
   var arduino = shoe('/flora')
     , split = es.split('\n')
+    , values = {}
 
   arduino
     .pipe(split)
@@ -24,6 +25,14 @@ function ready() {
       data.forEach(function(val) {
         val = val.split(':')
         if (val.length < 2) return
+        val[1] = parseInt(val[1], 10)
+
+        // Reduce noisy Arduino data in specific cases
+        if (/d1|d0/g.test(val[0])) {
+          values[val[0]] = values[val[0]] === undefined ? val[1] : values[val[0]]
+          values[val[0]] = val[1] + (values[val[0]] - val[1]) * 0.9
+          val[1] = values[val[0]]
+        }
 
         flora.emit('change', val[0], val[1])
         flora.emit('change:'+val[0], val[1])
