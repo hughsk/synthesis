@@ -90,7 +90,7 @@ function clamp(val, min, max) {
 
 flora.on('change:t0', function(theremin) {
   meshes.forEach(function(mesh) {
-    mesh.params.timed.growthGoal = Math.max((theremin - 100) / 200, 0)
+    mesh.params.timed.growthGoal = Math.min(Math.max((theremin - 100) / 200, 0), 1.5)
   })
 })
 
@@ -113,5 +113,5 @@ flora.on('change:d2', function(potent) {
   flora.gui.properties.amplitude = (900 - potent) / 5
 })
 flora.on('change:d3', function(potent) {
-  flora.gui.properties.hue = Math.PI * potent / 512
+  flora.gui.properties.width = potent / 7
 })

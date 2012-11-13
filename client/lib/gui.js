@@ -143,6 +143,14 @@ module.exports = function gui(meshes) {
     mesh.params.timed.hueProgress = hue * 180
   }))
 
+  addProp(potent, 'width', 1, 200, params.petal.curveHeightScale)
+    .name('Width')
+    .step(0.25)
+
+  properties.on('change:width', update(function(width, mesh) {
+    mesh.params.petal.curveWidthScale = width
+  }))
+
   addProp(potent, 'amplitude', 0, 120, params.petal.curveHeightScale)
     .name('Amplitude')
     .step(0.5)
@@ -225,6 +233,7 @@ module.exports = function gui(meshes) {
   })
 
   gui.properties = properties
+  gui.domElement.style.display = 'none'
 
   return gui
 };

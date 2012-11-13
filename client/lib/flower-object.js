@@ -53,9 +53,15 @@ FlowerObject.prototype.tick = function() {
 
   this.material.uniforms.curveHeightStart.value = this.params.petal.curveHeightStart
   this.material.uniforms.curveHeightEnd.value = this.params.petal.curveHeightEnd
+  this.material.uniforms.curveWidthScale.value = this.params.petal.curveWidthScale
 
-  this.params.timed.twirlProgress += this.params.timed.twirlSpeed
-  this.material.uniforms.twirl.value = Math.sin(this.params.timed.twirlProgress) * 12
+  if (this.params.timed.twirlSpeed < 0.01) {
+    this.params.timed.twirlProgress += ((this.params.timed.twirlProgress % (2*Math.PI)) - this.params.timed.twirlProgress) * 0.005
+  } else {
+    this.params.timed.twirlProgress += Math.max(0, this.params.timed.twirlSpeed - 0.01)
+  }
+
+  this.material.uniforms.twirl.value = Math.sin(this.params.timed.twirlProgress) * 8
 
   this.params.timed.hueProgress += this.params.timed.hueSpeed
 
