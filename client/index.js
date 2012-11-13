@@ -18,11 +18,17 @@ function ready() {
   arduino
     .pipe(split)
     .on('data', function(data) {
-      data = data.split(/\s+/g)
-      if (data.length < 2) return
+      data = data.split(/\t+/g)
+      if (data.length < 1) return
 
-      flora.emit('change', data[0], data[1])
-      flora.emit('change:'+data[0], data[1])
+      data.forEach(function(val) {
+        val = val.split(':')
+        if (val.length < 2) return
+
+        flora.emit('change', val[0], val[1])
+        flora.emit('change:'+val[0], val[1])
+      })
+
     })
 };
 

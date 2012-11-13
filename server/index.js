@@ -5,13 +5,17 @@ var sp = require('serialport')
   , shoe = require('shoe')
   , connect = require('connect')
 
-var serial = process.env.SERIAL || '/dev/tty.usbmodemfa131'
+var serials = (process.env.SERIAL || '/dev/tty.usbmodemfa131,/dev/tty.usbmodemfd121').split(',')
   , port = process.env.PORT || 8080
-  , arduino = new sp.SerialPort(serial, {})
   , app = connect()
   , server
+  , arduinos
 
-console.log('Serial port:', serial)
+arduinos = serials.map(function(serial) {
+  return new sp.SerialPort(serial, {})
+})
+
+console.log('Serial ports:', serials)
 console.log('Server port:', port)
 
 app
@@ -23,67 +27,65 @@ server = http.createServer(app)
 server.listen(port)
 
 shoe(function clientStream(stream) {
-  var through = es.through()
-
-  function listener(data) {
-    through.write(data)
-  };
-
-  arduino.on('data', listener)
-
-  stream.on('end', function() {
-    arduino.removeListener('data', listener)
-    through.end()
+  var through = es.through(function(data) {
+    this.emit('data', data + '\n')
   })
 
-  through
-    .pipe(stream)
-}).install(server, '/flora')
+  arduinos.forEach(function(arduino) {
+    var split = es.split('\n')
 
-/**
- * Debug logging of serial port output
- */
-function watchData(emitter) {
-  if (!process.env.LOG) return
-  emitter.on('data'
-    , process.stdout.write.bind(process.stdout)
-  );
-};
-watchData(arduino)
+    function listener(data) {
+      split.write(data)
+    };
+
+    split.pipe(through)
+    
+    arduino.on('data', listener)
+
+    stream.on('end', function() {
+      arduino.removeListener('data', listener)
+      through.end()
+    })
+  })
+
+  through.pipe(stream)
+}).install(server, '/flora')
 
 /**
  * If unable to connect to an Arduino,
  * serve up some dummy data.
+ *
+ * (disabled for now)
  */
-arduino.once('error', function(err) {
-  if (!/Cannot open/gi.test(err.message)) throw err
+// arduino.once('error', function(err) {
+//   if (!/Cannot open/gi.test(err.message)) throw err
   
-  var time = 0
+//   var time = 0
 
-  console.log('')
-  console.log('WARNING:', err.message)
-  console.log('Difficulties connecting to Arudino\'s serial port...')
-  console.log('')
-  console.log('Ensure you have the correct serial port set, and in')
-  console.log('the meantime here\'s some dummy data.')
-  console.log('')
+//   console.log('')
+//   console.log('WARNING:', err.message)
+//   console.log('Difficulties connecting to Arudino\'s serial port...')
+//   console.log('')
+//   console.log('Ensure you have the correct serial port set, and in')
+//   console.log('the meantime here\'s some dummy data.')
+//   console.log('')
 
-  arduino = new Stream
+//   arduino = new Stream
 
-  setInterval(function() {
-    var data = 'd1'
+//   setInterval(function() {
+//     var data = 'd1'
 
-    data += ' '
-    data += Math.floor(512 * (Math.sin(time) + 1))
-    data += '\n'
+//     data += ' '
+//     data += Math.floor(512 * (Math.sin(time) + 1))
+//     data += '\n'
 
-    data += 'd2 '
-    data += Math.floor(512 * (Math.sin(time*1.714 + 0.05) + 1))
-    data += '\n'
+//     data += 'd2 '
+//     data += Math.floor(512 * (Math.sin(time*1.714 + 0.05) + 1))
+//     data += '\n'
 
-    arduino.emit('data', data)
-    time += 0.0221
-  }, 50)
+//     arduino.emit('data', data)
+//     time += 0.0221
+//   }, 50)
 
-  watchData(arduino)
-})
+//   watchData(arduino)
+// })
