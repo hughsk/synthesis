@@ -56,7 +56,9 @@ FlowerObject.prototype.tick = function() {
   this.material.uniforms.curveWidthScale.value = this.params.petal.curveWidthScale
 
   if (this.params.timed.twirlSpeed < 0.01) {
-    this.params.timed.twirlProgress += ((this.params.timed.twirlProgress % (2*Math.PI)) - this.params.timed.twirlProgress) * 0.005
+    this.params.timed.twirlProgress += Math.floor(
+      (this.params.timed.twirlProgress / (2*Math.PI)
+    ) - this.params.timed.twirlProgress) * 0.005
   } else {
     this.params.timed.twirlProgress += Math.max(0, this.params.timed.twirlSpeed - 0.01)
   }

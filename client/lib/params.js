@@ -22,11 +22,11 @@ params.flower = {
   , redness: 1.3
   , greeness: 0.9
   , blueness: 1.2
-  , lines: 15
-  , lineDarkness: 0.3
+  , lines: 20
+  , lineDarkness: 0.275
   , dirtiness: 0.025 // 0.05
-  , border: 0.4
-  , borderSize: 0.1
+  , border: 0.2
+  , borderSize: 0.15
   , wireframe: false
   , visible: true
 };
