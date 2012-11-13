@@ -37,6 +37,7 @@ params.timed = {
   , twirlSpeed: 0
   , twirlProgress: 0
   , offset: 0
+  , spreadOffsetSpeed: 0
   , hueSpeed: 0
   , hueProgress: 180 * 0.2
 }

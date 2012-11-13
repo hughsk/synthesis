@@ -38,6 +38,7 @@ function decideOrientation(petal, params, p, l) {
 
 FlowerObject.prototype.tick = function() {
   var offset
+    , shouldUpdate = false
 
   this.rebuilt = false
   this.material.uniforms.growth.value = interpolator.linear(
@@ -63,6 +64,11 @@ FlowerObject.prototype.tick = function() {
     this.params.timed.twirlProgress += Math.max(0, this.params.timed.twirlSpeed - 0.01)
   }
 
+  if (this.params.timed.spreadOffsetSpeed > 0.01) {
+    this.params.flower.spreadOffset += this.params.timed.spreadOffsetSpeed - 0.01
+    shouldUpdate = true
+  }
+
   this.material.uniforms.twirl.value = Math.sin(this.params.timed.twirlProgress) * 8
 
   this.params.timed.hueProgress += this.params.timed.hueSpeed
@@ -71,6 +77,8 @@ FlowerObject.prototype.tick = function() {
   this.material.uniforms.redness.value = colors.r
   this.material.uniforms.greeness.value = colors.g
   this.material.uniforms.blueness.value = colors.b
+
+  if (shouldUpdate) this.update()
 };
 
 function hsvToRgb(h, s, v) {

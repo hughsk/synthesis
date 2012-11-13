@@ -102,6 +102,21 @@ flora.on('change:p0', function(proximity) {
 flora.on('change:p1', function(proximity) {
   flora.gui.properties.twirlSpeed = Math.max((proximity - 200) / 2500, 0)
 })
+flora.on('change:p2', function(proximity) {
+  proximity -= 175
+  if (proximity <= 0) return flora.gui.properties.spreadOffsetSpeed = 0
+  flora.gui.properties.spreadOffsetSpeed = proximity / 5000
+})
+flora.on('change:p3', function(proximity) {
+  proximity -= 175
+  if (proximity <= 0) return flora.gui.properties.spread = 0.5
+  flora.gui.properties.spread = proximity / 50
+})
+flora.on('change:p5', function(proximity) {
+  proximity -= 175
+  if (proximity <= 0) return flora.gui.properties.curveWidth = 0
+  flora.gui.properties.curveWidth = proximity / 20
+})
 
 flora.on('change:d0', function(potent) {
   flora.gui.properties.layers = Math.round(clamp(20 - (potent - 65) / 50, 1, 20))

@@ -111,10 +111,27 @@ module.exports = function gui(meshes) {
     mesh.params.timed.twirlSpeed = speed
   }))
 
-  // addProp(proximity, 'twirl', -2 * Math.PI, 2 * Math.PI, params.petal.twirl)
-  //   .name('Twirl')
-  //   .step(0.01)
-  //   .onChange(updateUniforms('twirl'))
+  addProp(proximity, 'spreadOffsetSpeed', 0, 5, params.flower.spreadOffset)
+    .name('Spread Offset')
+    .step(0.01)
+
+  properties.on('change:spreadOffsetSpeed', updateGeometry(function(offset, mesh) {
+    mesh.params.timed.spreadOffsetSpeed = offset
+  }))
+
+  addProp(proximity, 'spread', 0, 5, params.flower.spread)
+    .name('Spread')
+    .step(0.01)
+
+  properties.on('change:spread', updateGeometry(function(spread, mesh) {
+    mesh.params.flower.spread = spread
+  }))
+
+  addProp(proximity, 'curveWidth', 0, 6 * Math.PI, params.flower.curveWidthStart)
+    .name('Curve Width')
+    .step(0.01)
+
+  properties.on('change:curveWidth', updateUniforms('curveWidthStart'))
 
   /**
    * Potentiometers
