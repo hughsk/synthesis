@@ -5,7 +5,7 @@ var sp = require('serialport')
   , shoe = require('shoe')
   , connect = require('connect')
 
-var serials = (process.env.SERIAL || '/dev/tty.usbmodemfa131,/dev/tty.usbmodemfd121,/dev/ttyAMC0,/dev/ttyAMC1').split(',')
+var serials = (process.env.SERIAL || '/dev/tty.usbmodemfa131,/dev/tty.usbmodemfd121,/dev/ttyACM0,/dev/ttyACM1').split(',')
   , port = process.env.PORT || 8080
   , app = connect()
   , server
