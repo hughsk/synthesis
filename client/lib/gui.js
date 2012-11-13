@@ -103,10 +103,18 @@ module.exports = function gui(meshes) {
       mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + waveLength
     }))
 
-  addProp(proximity, 'twirl', -2 * Math.PI, 2 * Math.PI, params.petal.twirl)
-    .name('Twirl')
+  addProp(proximity, 'twirlSpeed', 0, 1, params.timed.twirlSpeed)
+    .name('Twirl Speed')
     .step(0.01)
-    .onChange(updateUniforms('twirl'))
+
+  properties.on('change:twirlSpeed', update(function(speed, mesh) {
+    mesh.params.timed.twirlSpeed = speed
+  }))
+
+  // addProp(proximity, 'twirl', -2 * Math.PI, 2 * Math.PI, params.petal.twirl)
+  //   .name('Twirl')
+  //   .step(0.01)
+  //   .onChange(updateUniforms('twirl'))
 
   /**
    * Potentiometers
@@ -125,6 +133,14 @@ module.exports = function gui(meshes) {
 
   properties.on('change:petals', updateGeometry(function (petals, mesh) {
     mesh.params.flower.petals = petals
+  }))
+
+  addProp(potent, 'hue', 0, 3, params.timed.hueProgress)
+    .name('Hue')
+    .step(0.01)
+
+  properties.on('change:hue', updateGeometry(function (hue, mesh) {
+    mesh.params.timed.hueProgress = hue * 180
   }))
 
   addProp(potent, 'amplitude', 0, 120, params.petal.curveHeightScale)

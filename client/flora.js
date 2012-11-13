@@ -88,24 +88,30 @@ function clamp(val, min, max) {
   return val
 };
 
-flora.on('change:t0', function(d2) {
+flora.on('change:t0', function(theremin) {
   meshes.forEach(function(mesh) {
-    mesh.params.timed.growthGoal = Math.max((d2 - 65) / 200, 0)
+    mesh.params.timed.growthGoal = Math.max((theremin - 100) / 200, 0)
   })
 })
-flora.on('change:p0', function(d2) {
+
+flora.on('change:p0', function(proximity) {
   meshes.forEach(function(mesh) {
-    mesh.params.timed.heightPhaseSpeed = Math.max((d2 - 65) / 1000, 0)
+    mesh.params.timed.heightPhaseSpeed = Math.max((proximity - 200) / 1000, 0)
   })
 })
-flora.on('change:d0', function(d0) {
-  flora.gui.properties.layers = Math.round(clamp(20 - (d0 - 65) / 50, 1, 20))
+flora.on('change:p1', function(proximity) {
+  flora.gui.properties.twirlSpeed = Math.max((proximity - 200) / 2500, 0)
 })
-flora.on('change:d1', function(d1) {
-  flora.gui.properties.petals = Math.round(clamp(20 - (d1 - 65) / 50, 1, 20))
+
+flora.on('change:d0', function(potent) {
+  flora.gui.properties.layers = Math.round(clamp(20 - (potent - 65) / 50, 1, 20))
 })
-// flora.on('change:p0', function(waveLength) {
-//   meshes.forEach(function(mesh) {
-//     mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + Math.max((waveLength - 65) / 10, 0)
-//   })
-// })
+flora.on('change:d1', function(potent) {
+  flora.gui.properties.petals = Math.round(clamp(20 - (potent - 65) / 50, 1, 20))
+})
+flora.on('change:d2', function(potent) {
+  flora.gui.properties.amplitude = (900 - potent) / 5
+})
+flora.on('change:d3', function(potent) {
+  flora.gui.properties.hue = Math.PI * potent / 512
+})

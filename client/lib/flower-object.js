@@ -54,6 +54,32 @@ FlowerObject.prototype.tick = function() {
   this.material.uniforms.curveHeightStart.value = this.params.petal.curveHeightStart
   this.material.uniforms.curveHeightEnd.value = this.params.petal.curveHeightEnd
 
+  this.params.timed.twirlProgress += this.params.timed.twirlSpeed
+  this.material.uniforms.twirl.value = Math.sin(this.params.timed.twirlProgress) * 12
+
+  this.params.timed.hueProgress += this.params.timed.hueSpeed
+
+  var colors = hsvToRgb(this.params.timed.hueProgress, 0.4, 0.9)
+  this.material.uniforms.redness.value = colors.r
+  this.material.uniforms.greeness.value = colors.g
+  this.material.uniforms.blueness.value = colors.b
+};
+
+function hsvToRgb(h, s, v) {
+  var hi = Math.floor(h / 60) % 6
+    , f = (h / 60) - Math.floor(h / 60)
+    , p = v * (1 - s)
+    , q = v * (1 - (f * s))
+    , t = v * (1 - ((1 - f) * s))
+
+  return [
+    { r: v, g: t, b: p },
+    { r: q, g: v, b: p },
+    { r: p, g: v, b: t },
+    { r: p, g: q, b: v },
+    { r: t, g: p, b: v },
+    { r: v, g: p, b: q }
+  ][hi]
 };
 
 FlowerObject.prototype.clear = function() {

@@ -97,10 +97,11 @@ void main()
     float r = color[0] + (1.0 - color[0]) * lightness;
     float g = color[1] + (1.0 - color[1]) * lightness;
     float b = color[2] + (1.0 - color[2]) * lightness;
+    float gradient = min(max(0.75 * lengthPoint * lengthPoint - 0.175, 0.0), 1.0);
     
-    r *= redness;
-    g *= greeness;
-    b *= blueness;
+    r *= 1.3 + (redness - 1.3) * gradient;
+    g *= 0.9 + (greeness - 0.9) * gradient;
+    b *= 1.2 + (blueness - 1.2) * gradient;
     
     vec3 c = vec3(r, g, b);
     

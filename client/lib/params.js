@@ -34,5 +34,9 @@ params.flower = {
 params.timed = {
     heightPhaseSpeed: 0
   , growthGoal: params.flower.growth
+  , twirlSpeed: 0
+  , twirlProgress: 0
   , offset: 0
+  , hueSpeed: 0
+  , hueProgress: 0
 }
