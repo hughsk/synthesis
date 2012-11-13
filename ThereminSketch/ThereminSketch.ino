@@ -18,7 +18,7 @@
 //! Macro that clears all Timer/Counter1 interrupt flags.
 #define CLEAR_ALL_TIMER1_INT_FLAGS    (TIFR1 = TIFR1)
 
-int pinLed = 13;                 // LED connected to digital pin 13
+int pinLed = 13;
 int pinFreq = 5;
 
 void setup()
@@ -100,7 +100,7 @@ void loop()
   }
 
   // autocalibration
-  if (cnt % 20 == 0) {   // try autocalibrate after n cycles
+  if (cnt % 20 == 0 && cnt < 200) {   // try autocalibrate after n cycles
     //Serial.print("*");
     if (cal_max <= 2) {
       freq_zero=freq_in;
