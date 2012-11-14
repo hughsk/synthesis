@@ -28,7 +28,7 @@ function ready() {
         val[1] = parseInt(val[1], 10)
 
         // Reduce noisy Arduino data in specific cases
-        if (/d1|d0/g.test(val[0])) {
+        if (/d1|d0|p3/g.test(val[0])) {
           values[val[0]] = values[val[0]] === undefined ? val[1] : values[val[0]]
           values[val[0]] = val[1] + (values[val[0]] - val[1]) * 0.9
           val[1] = values[val[0]]
