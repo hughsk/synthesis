@@ -90,17 +90,17 @@ function clamp(val, min, max) {
 
 flora.on('change:t0', function(theremin) {
   meshes.forEach(function(mesh) {
-    mesh.params.timed.growthGoal = Math.min(Math.max((theremin - 100) / 200, 0), 1.5)
+    mesh.params.timed.growthGoal = Math.min(Math.max((theremin - 100) / 400, 0), 1.1)
   })
 })
 
 flora.on('change:p0', function(proximity) {
   meshes.forEach(function(mesh) {
-    mesh.params.timed.heightPhaseSpeed = Math.max((proximity - 200) / 1000, 0)
+    mesh.params.timed.heightPhaseSpeed = Math.max((proximity - 200) / 1500, 0)
   })
 })
 flora.on('change:p1', function(proximity) {
-  flora.gui.properties.twirlSpeed = Math.max((proximity - 200) / 2500, 0)
+  flora.gui.properties.twirlSpeed = Math.max((proximity - 200) / 9500, 0)
 })
 flora.on('change:p2', function(proximity) {
   proximity -= 175
@@ -110,7 +110,7 @@ flora.on('change:p2', function(proximity) {
 flora.on('change:p3', function(proximity) {
   proximity -= 175
   if (proximity <= 0) return flora.gui.properties.spread = 0.5
-  flora.gui.properties.spread = proximity / 50
+  flora.gui.properties.spread = proximity / 200
 })
 flora.on('change:p5', function(proximity) {
   proximity -= 175
