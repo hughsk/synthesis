@@ -6210,6 +6210,7 @@ flora.init = function() {
   document.body.appendChild(renderer.domElement);
 
   flora.gui = gui(meshes)
+  console.log(flora)
 };
 
 flora.animate = function() {
@@ -6225,14 +6226,60 @@ flora.render = function() {
 flora.init()
 flora.animate()
 
-// flora.on('change:d1', function(d1) {
-//   mesh.material.uniforms.growth.value = d1 / 500
-// })
+flora.update = function(property, value) {
+  meshes.forEach(function(mesh) {
+    flora.update[property](mesh, value)
+  });
+};
 
-// var chs = interpolator.linear(-Math.PI * 4, Math.PI * 4)
-// flora.on('change:d2', function(d2) {
-//   mesh.material.uniforms.curveHeightStart.value = chs(d2 / 1000)
-// })
+function clamp(val, min, max) {
+  if (val < min) return min
+  if (val > max) return max
+  return val
+};
+
+flora.on('change:t0', function(theremin) {
+  meshes.forEach(function(mesh) {
+    mesh.params.timed.growthGoal = Math.min(Math.max((theremin - 100) / 400, 0), 1.1)
+  })
+})
+
+flora.on('change:p0', function(proximity) {
+  meshes.forEach(function(mesh) {
+    mesh.params.timed.heightPhaseSpeed = Math.max((proximity - 200) / 1500, 0)
+  })
+})
+flora.on('change:p1', function(proximity) {
+  flora.gui.properties.twirlSpeed = Math.max((proximity - 200) / 9500, 0)
+})
+flora.on('change:p2', function(proximity) {
+  proximity -= 175
+  if (proximity <= 0) return flora.gui.properties.spreadOffsetSpeed = 0
+  flora.gui.properties.spreadOffsetSpeed = proximity / 5000
+})
+flora.on('change:p3', function(proximity) {
+  proximity -= 175
+  if (proximity <= 0) return flora.gui.properties.spread = 0.5
+  flora.gui.properties.spread = proximity / 200
+})
+flora.on('change:p5', function(proximity) {
+  proximity -= 175
+  if (proximity <= 0) return flora.gui.properties.curveWidth = 0
+  flora.gui.properties.curveWidth = proximity / 20
+})
+
+flora.on('change:d0', function(potent) {
+  flora.gui.properties.layers = Math.round(clamp(20 - (potent - 65) / 50, 1, 20))
+})
+flora.on('change:d1', function(potent) {
+  flora.gui.properties.petals = Math.round(clamp(20 - (potent - 65) / 50, 1, 20))
+})
+flora.on('change:d2', function(potent) {
+  flora.gui.properties.amplitude = (900 - potent) / 5
+})
+flora.on('change:d3', function(potent) {
+  flora.gui.properties.width = potent / 7
+})
 
 });
 
@@ -6405,6 +6452,7 @@ module.exports = FlowerObject = function(fraction) {
   this.fraction = fraction * Math.PI * 2
   this.petals = [];
   this.petalGeometry = new PetalGeometry();
+  this.rebuilt = false
   this.material = FlowerMaterial(
       this.params
     , this.petalGeometry
@@ -6428,7 +6476,9 @@ function decideOrientation(petal, params, p, l) {
 
 FlowerObject.prototype.tick = function() {
   var offset
+    , shouldUpdate = false
 
+  this.rebuilt = false
   this.material.uniforms.growth.value = interpolator.linear(
       this.material.uniforms.growth.value
     , this.params.timed.growthGoal
@@ -6442,7 +6492,48 @@ FlowerObject.prototype.tick = function() {
 
   this.material.uniforms.curveHeightStart.value = this.params.petal.curveHeightStart
   this.material.uniforms.curveHeightEnd.value = this.params.petal.curveHeightEnd
+  this.material.uniforms.curveWidthScale.value = this.params.petal.curveWidthScale
 
+  if (this.params.timed.twirlSpeed < 0.01) {
+    this.params.timed.twirlProgress += Math.floor(
+      (this.params.timed.twirlProgress / (2*Math.PI)
+    ) - this.params.timed.twirlProgress) * 0.005
+  } else {
+    this.params.timed.twirlProgress += Math.max(0, this.params.timed.twirlSpeed - 0.01)
+  }
+
+  if (this.params.timed.spreadOffsetSpeed > 0.01) {
+    this.params.flower.spreadOffset += this.params.timed.spreadOffsetSpeed - 0.01
+    shouldUpdate = true
+  }
+
+  this.material.uniforms.twirl.value = Math.sin(this.params.timed.twirlProgress) * 8
+
+  this.params.timed.hueProgress += this.params.timed.hueSpeed
+
+  var colors = hsvToRgb(this.params.timed.hueProgress, 0.4, 0.9)
+  this.material.uniforms.redness.value = colors.r
+  this.material.uniforms.greeness.value = colors.g
+  this.material.uniforms.blueness.value = colors.b
+
+  if (shouldUpdate) this.update()
+};
+
+function hsvToRgb(h, s, v) {
+  var hi = Math.floor(h / 60) % 6
+    , f = (h / 60) - Math.floor(h / 60)
+    , p = v * (1 - s)
+    , q = v * (1 - (f * s))
+    , t = v * (1 - ((1 - f) * s))
+
+  return [
+    { r: v, g: t, b: p },
+    { r: q, g: v, b: p },
+    { r: p, g: v, b: t },
+    { r: p, g: q, b: v },
+    { r: t, g: p, b: v },
+    { r: v, g: p, b: q }
+  ][hi]
 };
 
 FlowerObject.prototype.clear = function() {
@@ -6461,7 +6552,10 @@ FlowerObject.prototype.rebuild = function() {
 
   lc = this.params.flower.layers;
   pc = this.params.flower.petals;
-  
+
+  if (this.rebuilt) return
+  this.rebuilt = true
+
   for (l = 0; l < lc; l += 1) {
     for (p = 0; p < pc; p += 1) {
       petal = this.children[l * pc + p]
@@ -6668,11 +6762,11 @@ params.flower = {
   , redness: 1.3
   , greeness: 0.9
   , blueness: 1.2
-  , lines: 15
-  , lineDarkness: 0.3
-  , dirtiness: 0 // 0.05
-  , border: 0.4
-  , borderSize: 0.1
+  , lines: 20
+  , lineDarkness: 0.275
+  , dirtiness: 0.025 // 0.05
+  , border: 0.2
+  , borderSize: 0.15
   , wireframe: false
   , visible: true
 };
@@ -6680,7 +6774,12 @@ params.flower = {
 params.timed = {
     heightPhaseSpeed: 0
   , growthGoal: params.flower.growth
+  , twirlSpeed: 0
+  , twirlProgress: 0
   , offset: 0
+  , spreadOffsetSpeed: 0
+  , hueSpeed: 0
+  , hueProgress: 180 * 0.2
 }
 });
 
@@ -6820,6 +6919,8 @@ module.exports = clonePrototype;
 });
 
 require.define("/client/lib/gui.js",function(require,module,exports,__dirname,__filename,process,global){var params = require('./params')
+  , raf = require('./raf')
+  , EventEmitter = require('events').EventEmitter
 
 module.exports = function gui(meshes) {
   var gui = new dat.GUI
@@ -6829,7 +6930,10 @@ module.exports = function gui(meshes) {
     , potent = gui.addFolder('Potentiometers')
     , maybe = gui.addFolder('Maybe')
     , test = gui.addFolder('Test')
-    , properties = {}
+    , properties = new EventEmitter
+    , rounded = {
+      petals: true
+    }
 
   gui.remember(properties)
 
@@ -6919,10 +7023,35 @@ module.exports = function gui(meshes) {
       mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + waveLength
     }))
 
-  addProp(proximity, 'twirl', -2 * Math.PI, 2 * Math.PI, params.petal.twirl)
-    .name('Twirl')
+  addProp(proximity, 'twirlSpeed', 0, 0.5, params.timed.twirlSpeed)
+    .name('Twirl Speed')
+    .step(0.005)
+
+  properties.on('change:twirlSpeed', update(function(speed, mesh) {
+    mesh.params.timed.twirlSpeed = speed
+  }))
+
+  addProp(proximity, 'spreadOffsetSpeed', 0, 0.1, params.flower.spreadOffset)
+    .name('Spread Offset')
+    .step(0.001)
+
+  properties.on('change:spreadOffsetSpeed', updateGeometry(function(offset, mesh) {
+    mesh.params.timed.spreadOffsetSpeed = offset
+  }))
+
+  addProp(proximity, 'spread', 0, 5, params.flower.spread)
+    .name('Spread')
     .step(0.01)
-    .onChange(updateUniforms('twirl'))
+
+  properties.on('change:spread', updateGeometry(function(spread, mesh) {
+    mesh.params.flower.spread = spread
+  }))
+
+  addProp(proximity, 'curveWidth', 0, 6 * Math.PI, params.flower.curveWidthStart)
+    .name('Curve Width')
+    .step(0.01)
+
+  properties.on('change:curveWidth', updateUniforms('curveWidthStart'))
 
   /**
    * Potentiometers
@@ -6930,21 +7059,40 @@ module.exports = function gui(meshes) {
   addProp(potent, 'layers', 1, 20, params.flower.layers)
     .name('Layers')
     .step(0.05)
-    .onChange(updateGeometry(function (layers, mesh) {
-      mesh.params.flower.layers = layers
-    }))
+
+  properties.on('change:layers', updateGeometry(function (layers, mesh) {
+    mesh.params.flower.layers = layers
+  }))
 
   addProp(potent, 'petals', 1, 20, params.flower.petals)
     .name('Petals')
     .step(1)
-    .onChange(updateGeometry(function (petals, mesh) {
-      mesh.params.flower.petals = petals
-    }))
+
+  properties.on('change:petals', updateGeometry(function (petals, mesh) {
+    mesh.params.flower.petals = petals
+  }))
+
+  // addProp(potent, 'hue', 0, 3, params.timed.hueProgress)
+  //   .name('Hue')
+  //   .step(0.01)
+
+  properties.on('change:hue', updateGeometry(function (hue, mesh) {
+    mesh.params.timed.hueProgress = hue * 180
+  }))
+
+  addProp(potent, 'width', 1, 200, params.petal.curveHeightScale)
+    .name('Width')
+    .step(0.25)
+
+  properties.on('change:width', update(function(width, mesh) {
+    mesh.params.petal.curveWidthScale = width
+  }))
 
   addProp(potent, 'amplitude', 0, 120, params.petal.curveHeightScale)
     .name('Amplitude')
     .step(0.5)
-    .onChange(updateUniforms('curveHeightScale'))
+
+  properties.on('change:amplitude', updateUniforms('curveHeightScale'))
 
   /**
    * Maybe
@@ -6952,16 +7100,18 @@ module.exports = function gui(meshes) {
   addProp(maybe, 'twist', 0, Math.PI, params.flower.twist)
     .name('Twist')
     .step(0.01)
-    .onChange(updateGeometry(function (twist, mesh) {
-      mesh.params.flower.twist = twist
-    }, 'update'))
+
+  properties.on('change:twist', updateGeometry(function (twist, mesh) {
+    mesh.params.flower.twist = twist
+  }, 'update'))
 
   addProp(maybe, 'offset', 0, 2, params.timed.offset)
     .name('Disorder')
     .step(0.01)
-    .onChange(update(function (offset, mesh) {
-      mesh.params.timed.offset = offset
-    }))
+
+  properties.on('change:offset', update(function (offset, mesh) {
+    mesh.params.timed.offset = offset
+  }))
 
   addProp(maybe, 'flowers', 1, 4, 4)
     .name('Flowers')
@@ -6971,7 +7121,87 @@ module.exports = function gui(meshes) {
       mesh.params.timed.growthGoal = mesh.params.flower.visible ? mesh.params.flower.growth : 0
     }))
 
+  /**
+   * Automatically tween properties when modified
+   */
+  Object.keys(properties).forEach(function(property) {
+    var current = properties[property]
+      , target = current
+      , updating = false
+
+    function updater() {
+      var diff
+
+      if (window.isStatic) {
+        updating = false
+        current = target
+        properties.emit('change', property, current)
+        properties.emit('change:'+property, current)
+        return
+      }
+
+      if (current === target) {
+        updating = false
+        return
+      }
+
+      diff = Math.abs(current - target)
+
+      if (rounded[property]) {
+        current = Math[
+          target > current ? 'ceil' : 'floor'
+        ](current + (target - current) * 0.5)
+      } else {
+        current = current + (target - current) * 0.05
+      }
+
+      properties.emit('change', property, current)
+      properties.emit('change:'+property, current)
+
+      if (diff < 0.005) current = target
+
+      raf(updater)
+    };
+
+    properties.__defineGetter__(property, function() {
+      return current
+    })
+
+    properties.__defineSetter__(property, function(val) {
+      target = val
+
+      if (!updating) {
+        updating = true
+        updater()
+      }
+    });
+  })
+
+  gui.properties = properties
+  if (!window.isStatic) {
+    gui.domElement.style.display = 'none'
+  }
+
+  return gui
 };
+});
+
+require.define("/client/lib/raf.js",function(require,module,exports,__dirname,__filename,process,global){// via github.com/component/raf
+
+module.exports = window.requestAnimationFrame
+  || window.webkitRequestAnimationFrame
+  || window.mozRequestAnimationFrame
+  || window.oRequestAnimationFrame
+  || window.msRequestAnimationFrame
+  || fallback;
+
+var prev = new Date().getTime();
+function fallback(fn) {
+  var curr = new Date().getTime();
+  var ms = Math.max(0, 16 - (curr - prev));
+  setTimeout(fn, ms);
+  prev = curr;
+}
 });
 
 require.define("/client/index.js",function(require,module,exports,__dirname,__filename,process,global){var shoe = require('shoe')
@@ -6990,15 +7220,30 @@ if ( window.innerWidth === 0 ) {
 function ready() {
   var arduino = shoe('/flora')
     , split = es.split('\n')
+    , values = {}
 
   arduino
     .pipe(split)
     .on('data', function(data) {
-      data = data.split(/\s+/g)
-      if (data.length < 2) return
+      data = data.split(/\t+/g)
+      if (data.length < 1) return
 
-      flora.emit('change', data[0], data[1])
-      flora.emit('change:'+data[0], data[1])
+      data.forEach(function(val) {
+        val = val.split(':')
+        if (val.length < 2) return
+        val[1] = parseInt(val[1], 10)
+
+        // Reduce noisy Arduino data in specific cases
+        if (/d1|d0|p3/g.test(val[0])) {
+          values[val[0]] = values[val[0]] === undefined ? val[1] : values[val[0]]
+          values[val[0]] = val[1] + (values[val[0]] - val[1]) * 0.9
+          val[1] = values[val[0]]
+        }
+
+        flora.emit('change', val[0], val[1])
+        flora.emit('change:'+val[0], val[1])
+      })
+
     })
 };
 
