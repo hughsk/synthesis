@@ -7023,7 +7023,7 @@ module.exports = function gui(meshes) {
       mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + waveLength
     }))
 
-  addProp(proximity, 'twirlSpeed', 0, 0.5, params.timed.twirlSpeed)
+  addProp(proximity, 'twirlSpeed', 0, 0.25, params.timed.twirlSpeed)
     .name('Twirl Speed')
     .step(0.005)
 
