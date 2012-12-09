@@ -103,17 +103,17 @@ module.exports = function gui(meshes) {
       mesh.params.petal.curveHeightEnd = mesh.params.petal.curveHeightStart + waveLength
     }))
 
-  addProp(proximity, 'twirlSpeed', 0, 1, params.timed.twirlSpeed)
+  addProp(proximity, 'twirlSpeed', 0, 0.25, params.timed.twirlSpeed)
     .name('Twirl Speed')
-    .step(0.01)
+    .step(0.005)
 
   properties.on('change:twirlSpeed', update(function(speed, mesh) {
     mesh.params.timed.twirlSpeed = speed
   }))
 
-  addProp(proximity, 'spreadOffsetSpeed', 0, 5, params.flower.spreadOffset)
+  addProp(proximity, 'spreadOffsetSpeed', 0, 0.1, params.flower.spreadOffset)
     .name('Spread Offset')
-    .step(0.01)
+    .step(0.001)
 
   properties.on('change:spreadOffsetSpeed', updateGeometry(function(offset, mesh) {
     mesh.params.timed.spreadOffsetSpeed = offset
@@ -139,7 +139,7 @@ module.exports = function gui(meshes) {
   addProp(potent, 'layers', 1, 20, params.flower.layers)
     .name('Layers')
     .step(0.05)
-  
+
   properties.on('change:layers', updateGeometry(function (layers, mesh) {
     mesh.params.flower.layers = layers
   }))
@@ -152,9 +152,9 @@ module.exports = function gui(meshes) {
     mesh.params.flower.petals = petals
   }))
 
-  addProp(potent, 'hue', 0, 3, params.timed.hueProgress)
-    .name('Hue')
-    .step(0.01)
+  // addProp(potent, 'hue', 0, 3, params.timed.hueProgress)
+  //   .name('Hue')
+  //   .step(0.01)
 
   properties.on('change:hue', updateGeometry(function (hue, mesh) {
     mesh.params.timed.hueProgress = hue * 180
@@ -171,7 +171,7 @@ module.exports = function gui(meshes) {
   addProp(potent, 'amplitude', 0, 120, params.petal.curveHeightScale)
     .name('Amplitude')
     .step(0.5)
-  
+
   properties.on('change:amplitude', updateUniforms('curveHeightScale'))
 
   /**
@@ -212,6 +212,14 @@ module.exports = function gui(meshes) {
     function updater() {
       var diff
 
+      if (window.isStatic) {
+        updating = false
+        current = target
+        properties.emit('change', property, current)
+        properties.emit('change:'+property, current)
+        return
+      }
+
       if (current === target) {
         updating = false
         return
@@ -250,7 +258,9 @@ module.exports = function gui(meshes) {
   })
 
   gui.properties = properties
-  gui.domElement.style.display = 'none'
+  if (!window.isStatic) {
+    gui.domElement.style.display = 'none'
+  }
 
   return gui
 };
