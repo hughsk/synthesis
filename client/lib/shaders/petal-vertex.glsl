@@ -7,13 +7,13 @@ uniform float curveHeightScale;
 uniform float curveWidthStart;
 uniform float curveWidthEnd;
 uniform float curveWidthScale;
-    
+
 uniform float growth;
 uniform float twirl;
 
 attribute float xpos;
 attribute float widths;
-    
+
 varying float widthPoint;
 varying float lengthPoint;
 
@@ -29,16 +29,16 @@ void main()
               1.0, 0.0, 0.0, 0.0,
               0.0, twirlCos, -twirlSin, 0.0,
               0.0, twirlSin,  twirlCos, 0.0,
-              0.0, 0.0,            0.0, 1.0 
+              0.0, 0.0,            0.0, 1.0
     );
 
     color = vec3(xpos, xpos, xpos);
-    
+
     widthPoint = widths;
     lengthPoint = xpos;
 
     // Amplitude of the petal's width/height.
-    // 
+    //
     // Note that the height is scaled by growth, but the
     // width remains the same.
     float ampHeight = sin(

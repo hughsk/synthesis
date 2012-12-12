@@ -1,4 +1,4 @@
-Copyright (C) 2012 by Hugh Kennedy (Flora)
+Copyright (C) 2012 by Hugh Kennedy (Synthesis)
 
 Copyright (C) 2011 by Ashima Arts (Simplex noise)
 

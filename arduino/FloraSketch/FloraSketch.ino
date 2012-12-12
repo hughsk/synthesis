@@ -1,5 +1,5 @@
-/* Flora Arduino Code
- * ------------------ 
+/* Sensor Arduino Code
+ * -------------------
  *
  * Simply reads the value and prints it out, .e.g:
  *
@@ -21,13 +21,13 @@ void loop() {
   Serial.print(getAnalog(3, "p2"));
   Serial.print(getAnalog(4, "p3"));
   Serial.print(getAnalog(5, "p5"));
-  
+
   // Potentiometers
   Serial.print(getAnalog(15, "d0"));
   Serial.print(getAnalog(14, "d1"));
   Serial.print(getAnalog(13, "d2"));
   Serial.print(getAnalog(12, "d3"));
-  
+
   Serial.println("");
   delay(120);
 }

@@ -1,15 +1,15 @@
-var shoe = require('shoe')
-  , es = require('event-stream')
-  , domready = require('domready')
-  , EventEmitter = require('events').EventEmitter
-  , flora = require('./flora.js')
-
 // workaround for chrome bug:
 // http://code.google.com/p/chromium/issues/detail?id=35980#c12
 if ( window.innerWidth === 0 ) {
     window.innerWidth = parent.innerWidth;
     window.innerHeight = parent.innerHeight;
 }
+
+var shoe = require('shoe')
+  , es = require('event-stream')
+  , domready = require('domready')
+  , EventEmitter = require('events').EventEmitter
+  , flora = require('./flora.js')
 
 function ready() {
   var arduino = shoe('/flora')

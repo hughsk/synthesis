@@ -89,7 +89,6 @@ float snoise(vec2 v) {
 }
 
 //
-//
 // Actual Fragment Shader Code:
 //
 void main()
@@ -98,10 +97,6 @@ void main()
     float g = color[1] + (1.0 - color[1]) * lightness;
     float b = color[2] + (1.0 - color[2]) * lightness;
     float gradient = min(max(0.75 * lengthPoint * lengthPoint - 0.175, 0.0), 1.0);
-
-    // r *= 1.3 + (redness - 1.3) * gradient;
-    // g *= 0.9 + (greeness - 0.9) * gradient;
-    // b *= 1.2 + (blueness - 1.2) * gradient;
 
     r *= 1.3;
     g *= 0.9;
