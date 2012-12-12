@@ -1,6 +1,6 @@
 # Synthesis
 
-![Synthesis](https://raw.github.com/hughsk/synthesis/master/images/projected.jpg)
+![Projected](https://raw.github.com/hughsk/synthesis/master/images/wip-010.png)
 
 Open sourcing the code for my graduation project because why not. It's an
 interactive installation - a 3D visualisation of four flowers, and 95%
@@ -35,3 +35,5 @@ It's totally dependent on these modules/libraries, among others:
 
 So thanks go to the authors for making the black boxes that made this a lot
 less mind-boggling to put together.
+
+![Projected](https://raw.github.com/hughsk/synthesis/master/images/projected.jpg)
