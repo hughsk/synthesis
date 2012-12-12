@@ -1,14 +1,14 @@
 # Synthesis
 
-![Synthesis](https://raw.github.com/hughsk/flora/master/images/projected.jpg)
+![Synthesis](https://raw.github.com/hughsk/synthesis/master/images/projected.jpg)
 
 Open sourcing the code for my graduation project because why not. It's an
 interactive installation - a 3D visualisation of four flowers, and 95%
 JavaScript. (The rest is handled by 2 Arduinos.)
 
-You can find a [demo here](http://hughsk.github.com/flora/public), but the other half is the interface, or "instrument", this cobbled together thing:
+You can find a [demo here](http://hughsk.github.com/synthesis/public), but the other half is the interface, or "instrument", this cobbled together thing:
 
-![Instrument](https://raw.github.com/hughsk/flora/master/images/instrument.jpg)
+![Instrument](https://raw.github.com/hughsk/synthesis/master/images/instrument.jpg)
 
 For the curious: the wire bit on the side is a
 **Capacitive [Theremin](http://www.youtube.com/watch?v=w5qf9O6c20o)**,
