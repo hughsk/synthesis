@@ -1,26 +1,38 @@
 {
-  "name": "flora",
+  "name": "synthesis-viz",
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
     "build": "node client/build.js && node_modules/.bin/browserify client/index.js -o public/index.js",
     "start": "node server",
-    "prestart": "npm run-script build"
+    "prestart": "npm run build"
   },
   "license": "MIT",
-  "description": "ERROR: No README.md file found!",
   "dependencies": {
     "serialport": "~1.0.8",
     "event-stream": "~3.0.7",
     "shoe": "0.0.7",
     "connect": "~2.6.1",
-    "interpolator": "0.0.1"
-  },
-  "devDependencies": {
-    "browserify": "~1.16.1",
     "domready": "~0.2.11",
+    "browserify": "~1.16.1",
     "ejs": "~0.8.3",
     "clone": "~0.1.1",
-    "debounce": "0.0.1"
-  }
+    "debounce": "0.0.1",
+    "interpolator": "0.0.1"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hughsk/synthesis.git"
+  },
+  "keywords": [
+    "synthesis",
+    "flower",
+    "flora",
+    "animation",
+    "arduino",
+    "generative",
+    "3d"
+  ],
+  "author": "Hugh Kennedy <hughskennedy@gmail.com> (http://hughskennedy.com/)"
 }
