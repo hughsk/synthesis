@@ -1,17 +1,17 @@
 # Synthesis
 
-![Synthesis](https://raw.github.com/hughsk/flora/master/images/screenshot.jpg)
+![Synthesis](https://raw.github.com/hughsk/flora/master/images/projected.jpg)
 
 Open sourcing the code for my graduation project because why not. It's an
 interactive installation - a 3D visualisation of four flowers, and 95%
-Javascript. (The rest is handled by 2 Arduinos.)
+JavaScript. (The rest is handled by 2 Arduinos.)
 
 You can find a [demo here](http://hughsk.github.com/flora/public), but the other half is the interface, or "instrument", this cobbled together thing:
 
 ![Instrument](https://raw.github.com/hughsk/flora/master/images/instrument.jpg)
 
 For the curious: the wire bit on the side is a
-**Capactive [Theremin](http://www.youtube.com/watch?v=w5qf9O6c20o)**,
+**Capacitive [Theremin](http://www.youtube.com/watch?v=w5qf9O6c20o)**,
 put together using [this guide](http://interface.khm.de/index.php/lab/experiments/theremin-as-a-capacitive-sensing-device/).
 The end result is that the flowers grow from nothing, the closer you move your
 hand to the wire.
@@ -22,7 +22,7 @@ potentiometers that control the other parameters mapped out in the demo.
 I might end up putting some more details on the process/setup here, but for now
 that's it :)
 
-It's totally dependant on these modules/libraries, among others:
+It's totally dependent on these modules/libraries, among others:
 
 * [three.js](http://mrdoob.github.com/three.js/)
 * [dat.gui](http://workshop.chromeexperiments.com/examples/gui/)
