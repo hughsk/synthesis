@@ -6,7 +6,9 @@ Open sourcing the code for my graduation project because why not. It's an
 interactive installation - a 3D visualisation of four flowers, and 95%
 JavaScript. (The rest is handled by 2 Arduinos.)
 
-You can find a [demo here](http://hughsk.github.com/synthesis/public), but the other half is the interface, or "instrument", this cobbled together thing:
+You can find a [demo here](http://hughsk.github.com/synthesis/public),
+and a [video here](https://vimeo.com/55429251). But the other half is
+the interface, or "instrument", this cobbled together thing:
 
 ![Instrument](https://raw.github.com/hughsk/synthesis/master/images/instrument.jpg)
 
